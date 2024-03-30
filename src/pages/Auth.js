@@ -1,4 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react';
+
+const initialState ={
+  email: "",
+  passsword: ""
+}
 
 const Auth = () => {
   return (
