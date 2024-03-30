@@ -1,6 +1,8 @@
 // import logo from './logo.svg';
+import {useState} from "react";
 import './App.css';
-
+import "./style.scss";
+import "./media-query.css";
 import Home from "./pages/Home";
 import {Routes, Route} from "react-router-dom"
 import { ToastContainer } from "react-toastify";
@@ -9,10 +11,13 @@ import Detail from "./pages/Detail";
 import AddEditBlog from './pages/AddEditBlog';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
+import Header from "./components/Header";
 
 function App() {
+  const [active, setActive] = useState("home")
   return (
     <div className="App">
+      <Header setActive={setActive} active={active}/>
       <ToastContainer/>
     <Routes>
       <Route path="/" element={<Home />}/>
