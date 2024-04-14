@@ -13,7 +13,7 @@ import About from './pages/About';
 import NotFound from './pages/NotFound';
 import Header from "./components/Header";
 import Auth from './pages/Auth';
-
+import { auth } from "./firebase";
 function App() {
   const [active, setActive] = useState("home");
   const [user, setUser] = useState(null);
@@ -22,12 +22,15 @@ function App() {
     auth.onAuthStateChanged((authUser) => {
       if(authUser) {
         setUser(authUser)
+      }else{
+        setUser(null)
       }
     })
-  })
+  }, []);
+
   return (
     <div className="App">
-      <Header setActive={setActive} active={active}/>
+      <Header setActive={setActive} active={active} user={user}/>
       <ToastContainer position="top-center"/>
     <Routes>
       <Route path="/" element={<Home />}/>
