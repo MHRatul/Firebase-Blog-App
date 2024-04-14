@@ -1,5 +1,5 @@
 // import logo from './logo.svg';
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import './App.css';
 import "./style.scss";
 import "./media-query.css";
@@ -15,18 +15,27 @@ import Header from "./components/Header";
 import Auth from './pages/Auth';
 
 function App() {
-  const [active, setActive] = useState("home")
+  const [active, setActive] = useState("home");
+  const [user, setUser] = useState(null);
+
+  useEffect(() =>{
+    auth.onAuthStateChanged((authUser) => {
+      if(authUser) {
+        setUser(authUser)
+      }
+    })
+  })
   return (
     <div className="App">
       <Header setActive={setActive} active={active}/>
-      <ToastContainer/>
+      <ToastContainer position="top-center"/>
     <Routes>
       <Route path="/" element={<Home />}/>
       <Route path="/detail/:id" element={<Detail />}/>
       <Route path="/create" element={<AddEditBlog />}/>
       <Route path="/update/:id" element={<AddEditBlog />}/>
       <Route path="/about" element={<About />}/>
-      <Route path="/auth" element={<Auth />}/>
+      <Route path="/auth" element={<Auth setActive={setActive} />}/>
       <Route path="*" element={<NotFound />}/>
     </Routes>
     </div>

@@ -1,6 +1,8 @@
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-
+import { auth } from "../firebase"
+import { useNavigate } from 'react-router-dom';
 const initialState = {
   firstName: "",
   lastName: "",
@@ -9,11 +11,12 @@ const initialState = {
   confirmPassword: ""
 };
 
-const Auth = () => {
+const Auth = ({setActive}) => {
   const [state, setState] = useState(initialState);
   const [signUp, setSignUp] = useState(false);
 
   const { email, password, firstName, lastName, confirmPassword } = state;
+  const navigate = useNavigate ();
 
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
@@ -22,13 +25,34 @@ const Auth = () => {
    const handleAuth =async (e) => {
     e.preventDefault();
     if(!signUp) {
-
+       if(email && password) {
+        const {user} = await signInWithEmailAndPassword (
+          auth, 
+          email, 
+          password
+          );
+        setActive("home");
+       }else {
+        return toast.error("All fields are mandatory to fill");
+       }
     } else {
       if (password !== confirmPassword){
-        return toast.error("passsword don't match")''
+        return toast.error("passsword don't match");
+      }
+      if (firstName && lastName && email && password){
+        const {user} = await createUserWithEmailAndPassword(
+          auth, 
+          email, 
+          password
+          );
+        await updateProfile (user, {displayName: `${firstName} ${lastName}`});
+        setActive("home");
+      } else {
+        return toast.error("All fields are mandatory to fill");
       }
     }
-   }
+    navigate("/");
+   };
 
   return (
     <div className="container-fluid mb-4">
@@ -91,7 +115,7 @@ const Auth = () => {
                   type='password'
                   className="form-control input-rext-box"
                   placeholder="Confirm password"
-                  name='confirmpassword'
+                  name='confirmPassword'
                   value={confirmPassword}
                   onChange={handleChange}
                 />
